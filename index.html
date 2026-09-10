@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <title>Akatsuki - Организация</title>
+    <style>
+        /* ОБЩИЙ СТИЛЬ */
+        body {
+            background-color: #1a1a2e;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        /* ===== ЛОГОТИП С АНИМАЦИЕЙ ===== */
+        .logo-container {
+            text-align: center;
+            margin: 30px 0;
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        /* КОНТЕЙНЕР ДЛЯ ЛОГОТИПА */
+        .logo-wrapper {
+            display: inline-block;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            padding: 20px 40px;
+            border-radius: 20px;
+        }
+
+        /* ЛОГОТИП (САМ ТЕКСТ) */
+        .logo {
+            font-size: 72px;
+            font-weight: bold;
+            color: #ff1744;
+            text-shadow: 0 0 30px rgba(255, 23, 68, 0.3);
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 2;
+            user-select: none;
+        }
+
+        /* ЭФФЕКТ УДАРА ПРИ НАЖАТИИ */
+        .logo-wrapper:active {
+            animation: hitEffect 0.8s ease forwards;
+        }
+
+        @keyframes hitEffect {
+            0% {
+                transform: scale(1) rotate(0deg);
+            }
+            15% {
+                transform: scale(1.2) rotate(-5deg);
+            }
+            30% {
+                transform: scale(0.9) rotate(3deg);
+            }
+            50% {
+                transform: scale(1.1) rotate(-2deg);
+            }
+            70% {
+                transform: scale(0.95) rotate(1deg);
+            }
+            100% {
+                transform: scale(1) rotate(0deg);
+            }
+        }
+
+        /* ===== ТРЕЩИНЫ ===== */
+        .crack-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 3;
+            opacity: 0;
+            transition: opacity 0.1s ease;
+        }
+
+        /* ТРЕЩИНЫ ПОЯВЛЯЮТСЯ ПРИ НАЖАТИИ */
+        .logo-wrapper:active .crack-overlay {
+            opacity: 1;
+            animation: cracksAppear 0.5s ease forwards;
+        }
+
+        @keyframes cracksAppear {
+            0% {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+            20% {
+                opacity: 1;
+                transform: scale(1.1);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(0.9);
+            }
+            70% {
+                opacity: 0.8;
+                transform: scale(1.05);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* ИСЧЕЗНОВЕНИЕ ТРЕЩИН */
+        .logo-wrapper:not(:active) .crack-overlay {
+            animation: cracksDisappear 0.5s ease forwards;
+        }
+
+        @keyframes cracksDisappear {
+            0% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(1.2);
+            }
+        }
+
+        /* SVG ТРЕЩИН */
+        .crack-svg {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .crack-svg line,
+        .crack-svg path {
+            stroke: #ff1744;
+            stroke-width: 2;
+            stroke-linecap: round;
+            filter: drop-shadow(0 0 5px rgba(255, 23, 68, 0.6));
+        }
+
+        /* ВСПЫШКА ПРИ УДАРЕ */
+        .flash {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 150px;
+            height: 150px;
+            background: radial-gradient(circle, rgba(255, 23, 68, 0.6), transparent);
+            border-radius: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0;
+        }
+
+        .logo-wrapper:active .flash {
+            animation: flashEffect 0.6s ease forwards;
+        }
+
+        @keyframes flashEffect {
+            0% {
+                transform: translate(-50%, -50%) scale(0);
+                opacity: 1;
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(3);
+                opacity: 0.8;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(4);
+                opacity: 0;
+            }
+        }
+
+        /* ===== ДРУГИЕ СТИЛИ ===== */
+        .nav-menu {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            padding: 20px;
+        }
+
+        .glass-btn {
+            display: inline-block;
+            padding: 12px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #ffffff;
+            text-decoration: none;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .glass-btn::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -60%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.1), transparent);
+            transform: rotate(25deg) translateX(-100%);
+            transition: transform 0.8s ease;
+            pointer-events: none;
+        }
+
+        .glass-btn:hover::before {
+            transform: rotate(25deg) translateX(150%);
+        }
+
+        .glass-btn:hover {
+            transform: scale(1.08);
+            background: rgba(255, 23, 68, 0.25);
+            border-color: rgba(255, 23, 68, 0.6);
+            box-shadow: 0 0 30px rgba(255, 23, 68, 0.3), 0 4px 30px rgba(0, 0, 0, 0.3);
+            color: #ff1744;
+        }
+
+        .glass-btn.red {
+            background: rgba(255, 23, 68, 0.15);
+            border-color: rgba(255, 23, 68, 0.3);
+        }
+
+        .glass-btn.red:hover {
+            background: rgba(255, 23, 68, 0.35);
+            border-color: rgba(255, 23, 68, 0.8);
+            color: #ffffff;
+        }
+
+        hr {
+            border: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #ff1744, transparent);
+            margin: 20px auto;
+            width: 70%;
+        }
+
+        .content-section {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .glass-box {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ЗАГОЛОВОК С ЛОГОТИПОМ -->
+    <div class="logo-container">
+        <div class="logo-wrapper">
+            <!-- ВСПЫШКА -->
+            <div class="flash"></div>
+
+            <!-- САМ ЛОГОТИП -->
+            <span class="logo">☁️ Akatsuki</span>
+
+            <!-- ТРЕЩИНЫ (SVG) -->
+            <div class="crack-overlay">
+                <svg class="crack-svg" viewBox="0 0 600 120" preserveAspectRatio="none">
+                    <!-- Главная трещина -->
+                    <path d="M 50 60 L 100 20 L 150 50 L 200 10 L 250 40 L 300 15 L 350 45 L 400 20 L 450 50 L 500 25 L 550 55" 
+                          stroke="#ff1744" stroke-width="3" fill="none" opacity="0.8"/>
+                    <!-- Боковые трещины -->
+                    <path d="M 100 20 L 120 0 L 140 15" stroke="#ff1744" stroke-width="2" fill="none" opacity="0.6"/>
+                    <path d="M 200 10 L 220 -5 L 240 8" stroke="#ff1744" stroke-width="2" fill="none" opacity="0.6"/>
+                    <path d="M 350 45 L 370 30 L 390 48" stroke="#ff1744" stroke-width="2" fill="none" opacity="0.6"/>
+                    <path d="M 500 25 L 520 10 L 540 28" stroke="#ff1744" stroke-width="2" fill="none" opacity="0.6"/>
+                    <!-- Мелкие трещины -->
+                    <path d="M 150 50 L 165 35 L 180 52" stroke="#ff1744" stroke-width="1.5" fill="none" opacity="0.5"/>
+                    <path d="M 300 15 L 315 0 L 330 18" stroke="#ff1744" stroke-width="1.5" fill="none" opacity="0.5"/>
+                    <path d="M 450 50 L 465 38 L 480 52" stroke="#ff1744" stroke-width="1.5" fill="none" opacity="0.5"/>
+                    <!-- Круговые трещины -->
+                    <path d="M 80 30 Q 90 10 100 25 Q 110 5 120 20" stroke="#ff1744" stroke-width="1" fill="none" opacity="0.4"/>
+                    <path d="M 380 20 Q 390 5 400 18 Q 410 0 420 15" stroke="#ff1744" stroke-width="1" fill="none" opacity="0.4"/>
+                    <!-- Звездообразные трещины -->
+                    <path d="M 250 40 L 235 25 M 250 40 L 265 30 M 250 40 L 245 55 M 250 40 L 260 50" 
+                          stroke="#ff1744" stroke-width="1.5" fill="none" opacity="0.5"/>
+                    <path d="M 550 55 L 535 45 M 550 55 L 565 48 M 550 55 L 545 70 M 550 55 L 560 68" 
+                          stroke="#ff1744" stroke-width="1.5" fill="none" opacity="0.5"/>
+                    <!-- Осколки (маленькие линии) -->
+                    <line x1="130" y1="10" x2="145" y2="5" stroke="#ff1744" stroke-width="1" opacity="0.3"/>
+                    <line x1="410" y1="10" x2="425" y2="5" stroke="#ff1744" stroke-width="1" opacity="0.3"/>
+                    <line x1="480" y1="30" x2="495" y2="25" stroke="#ff1744" stroke-width="1" opacity="0.3"/>
+                </svg>
+            </div>
+        </div>
+        <p align="center" style="color: #888; font-size: 14px; margin-top: -10px;">🔨 Нажми на меня!</p>
+    </div>
+
+    <!-- ===== СТЕКЛЯННЫЕ КНОПКИ ===== -->
+    <div class="nav-menu">
+        <a href="#home" class="glass-btn">🏠 Главная</a>
+        <a href="#members" class="glass-btn red">👥 Члены</a>
+        <a href="#info" class="glass-btn">📊 Информация</a>
+        <a href="#film" class="glass-btn red">🎬 О фильме</a>
+        <a href="#gallery" class="glass-btn">🖼️ Галерея</a>
+    </div>
+
+    <hr>
+
+    <!-- ===== КОНТЕНТ ===== -->
+    <div class="content-section">
+
+        <!-- ГЛАВНАЯ -->
+        <a name="home"></a>
+        <div class="glass-box">
+            <h2 align="center" style="color: #ff1744;">🏠 О организации</h2>
+            <center>
+                <img src="glawniy.jpg" alt="Akatsuki foto" border="4" width="300" style="border-color: #ff1744; border-radius: 10px;">
+            </center>
+            <p align="center" style="font-size: 18px;">
+                <b>Акацуки</b> (яп. 暁, «Рассвет») — тайная организация преступников-ниндзя.<br>
+                Цель — захватить всех хвостатых зверей и установить новый мировой порядок.
+            </p>
+        </div>
+
+        <!-- ЧЛЕНЫ -->
+        <a name="members"></a>
+        <div class="glass-box">
+            <h2 align="center" style="color: #ff1744;">👥 Члены организации</h2>
+            <table align="center" cellpadding="15">
+                <tr>
+                    <td valign="top" width="250" style="background: rgba(0,0,0,0.3); border-radius: 10px; padding: 15px;">
+                        <font color="#ff1744" size="4">🟥 Itachi Uchiha</font><br>
+                        <font color="#ff1744" size="4">🟥 Sasori</font><br>
+                        <font color="#ff1744" size="4">🟥 Nagato (Pain)</font><br>
+                        <font color="#ff1744" size="4">🟥 Kisame Hoshigaki</font><br>
+                        <font color="#ff1744" size="4">🟥 Orochimaru</font><br>
+                        <font color="#ff1744" size="4">🟥 Deidara</font>
+                    </td>
+                    <td valign="top" width="250" style="background: rgba(0,0,0,0.3); border-radius: 10px; padding: 15px;">
+                        <font color="#ff1744" size="4">🟥 Yahiko</font><br>
+                        <font color="#ff1744" size="4">🟥 Konan</font><br>
+                        <font color="#ff1744" size="4">🟥 Hidan</font><br>
+                        <font color="#ff1744" size="4">🟥 Zetsu</font><br>
+                        <font color="#ff1744" size="4">🟥 Kakuzu</font>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- ИНФОРМАЦИЯ -->
+        <a name="info"></a>
+        <div class="glass-box">
+            <h2 style="color: #ff1744;">📊 Информация о членах</h2>
+            <table border="2" bgcolor="#0a0a0a" cellpadding="10" cellspacing="0" style="width: 100%;">
+                <tr bgcolor="#ff1744">
+                    <td><font color="#0a0a0a" size="4"><b>Имя</b></font></td>
+                    <td><font color="#0a0a0a" size="4"><b>Кольцо</b></font></td>
+                    <td><font color="#0a0a0a" size="4"><b>Статус</b></font></td>
+                </tr>
+                <tr><td><font color="#ff1744">Itachi</font></td><td><font color="#ffffff">Акацуки (朱)</font></td><td><font color="#ff4444">Мёртв</font></td></tr>
+                <tr><td><font color="#ff1744">Sasori</font></td><td><font color="#ffffff">Гибель (玉)</font></td><td><font color="#ff4444">Мёртв</font></td></tr>
+                <tr><td><font color="#ff1744">Nagato</font></td><td><font color="#ffffff">Печаль (零)</font></td><td><font color="#ff4444">Мёртв</font></td></tr>
+                <tr><td><font color="#ff1744">Kisame</font></td><td><font color="#ffffff">Юг (南)</font></td><td><font color="#ff4444">Мёртв</font></td></tr>
+                <tr><td><font color="#ff1744">Deidara</font></td><td><font color="#ffffff">Искусство (青)</font></td><td><font color="#ff4444">Мёртв</font></td></tr>
+                <tr><td><font color="#ff1744">Konan</font></td><td><font color="#ffffff">Женщина (白)</font></td><td><font color="#ff4444">Мертва</font></td></tr>
+                <tr><td><font color="#ff1744">Hidan</font></td><td><font color="#ffffff">Вера (三)</font></td><td><font color="#ffaa00">Бессмертный</font></td></tr>
+                <tr><td><font color="#ff1744">Kakuzu</font></td><td><font color="#ffffff">Деньги (北)</font></td><td><font color="#ff4444">Мёртв</font></td></tr>
+                <tr><td><font color="#ff1744">Zetsu</font></td><td><font color="#ffffff">Пустота (亥)</font></td><td><font color="#ffaa00">Жив</font></td></tr>
+            </table>
+        </div>
+
+        <!-- О ФИЛЬМЕ -->
+        <a name="film"></a>
+        <div class="glass-box">
+            <h2 align="center" style="color: #ff1744;">🎬 О фильме / Аниме</h2>
+            <p align="center" style="font-size: 18px;">
+                <b>Название:</b> Наруто: Шиппуден<br>
+                <b>Жанр:</b> Приключения, фэнтези, боевик<br>
+                <b>Год выхода:</b> 2007<br>
+                <b>Студия:</b> Studio Pierrot<br>
+                <b>Эпизодов:</b> 500<br>
+                <b>Роль Акацуки:</b> Главные антагонисты
+            </p>
+        </div>
+
+        <!-- ГАЛЕРЕЯ -->
+        <a name="gallery"></a>
+        <div class="glass-box">
+            <h2 align="center" style="color: #ff1744;">🖼️ Галерея</h2>
+            <table align="center" cellpadding="20">
+                <tr>
+                    <td align="center" width="150" style="background: rgba(0,0,0,0.3); border-radius: 10px; padding: 20px;">
+                        <font color="#ff1744" size="5">🟥</font><br>
+                        <font color="#ffffff">Символ</font>
+                    </td>
+                    <td align="center" width="150" style="background: rgba(0,0,0,0.3); border-radius: 10px; padding: 20px;">
+                        <font color="#ff1744" size="5">☁️</font><br>
+                        <font color="#ffffff">Облака</font>
+                    </td>
+                    <td align="center" width="150" style="background: rgba(0,0,0,0.3); border-radius: 10px; padding: 20px;">
+                        <font color="#ff1744" size="5">🗡️</font><br>
+                        <font color="#ffffff">Оружие</font>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+    </div>
+
+    <hr>
+
+    <!-- ПОДВАЛ -->
+    <p align="center" style="color: #666;">
+        © 2026 Akatsuki Organization | Все права защищены
+    </p>
+
+</body>
+</html>
